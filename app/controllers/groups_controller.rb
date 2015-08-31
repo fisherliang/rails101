@@ -1,7 +1,52 @@
 class GroupsController < ApplicationController
 	def index
-		flash[:notice] = "早安，您好！"
-		flash[:alert] = "晚安，該睡了！"
-		flash[:warning] = "This is Warning"
+		#flash[:notice] = "早安，您好！"
+		#flash[:alert] = "晚安，該睡了！"
+		#flash[:warning] = "This is Warning"
+		@groups = Group.all
+	end
+
+	def show
+		@group = Group.find(params[:id])
+	end
+
+	def new
+		@group = Group.new
+	end
+
+	def edit
+		@group = Group.find(params[:id])
+	end
+
+	def create
+		@group = Group.create(groups_params)
+
+		if @group.save
+			redirect_to groups_path
+		else
+			render :new
+		end
+	end
+
+	def update
+		@group = Group.find(params[:id])
+
+		if @group.update(groups_params)
+			redirect_to groups_path, notice: "修改討論版成功"
+		else
+			render :edit
+		end
+	end
+
+	def destroy
+		@group = Group.find(params[:id])
+		@group.destroy
+		redirect_to groups_path, alert: "討論版已刪除"
+	end
+
+	private
+
+	def groups_params
+		params.require(:group).permit(:title, :description)
 	end
 end
